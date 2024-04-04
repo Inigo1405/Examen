@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
-from flask_cors import CORS
+# from flask_cors import CORS
 
 
 # Link github: https://github.com/Inigo1405/Examen
@@ -12,7 +12,7 @@ from flask_cors import CORS
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+# CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
 
 db = SQLAlchemy(app)
