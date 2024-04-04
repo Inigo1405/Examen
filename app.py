@@ -3,10 +3,16 @@ from dotenv import load_dotenv
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
+from flask_cors import CORS
+
+
+# Link github: https://github.com/Inigo1405/Examen
+# Link rendeer: https://examen-2ejx.onrender.com/
 
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
 
 db = SQLAlchemy(app)
