@@ -74,13 +74,13 @@ def read_by_year(year:int):
 
 
 @app.route(BASE_URL + '/read/company/<company>', methods=['GET'])
-def read_by_year(company:str):
+def read_by_company(company:str):
     games = Videojuegos.query.filter(Videojuegos.desarrollador==company)
     return jsonify([game.to_json() for game in games])
 
 
 @app.route(BASE_URL + '/read/plataform/<plataform>', methods=['GET'])
-def read_by_year(plataform:str):
+def read_by_plataform(plataform:str):
     games = Videojuegos.query.filter(Videojuegos.desarrollador==plataform)
     return jsonify([game.to_json() for game in games])
     
