@@ -3,16 +3,12 @@ from dotenv import load_dotenv
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
-# from flask_cors import CORS
-
-
-# Link github: https://github.com/Inigo1405/Examen
-# Link rendeer: https://examen-2ejx.onrender.com/
+from flask_cors import CORS
 
 load_dotenv()
 
 app = Flask(__name__)
-# CORS(app)
+CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
 
 db = SQLAlchemy(app)
@@ -49,18 +45,26 @@ class Videojuegos(db.Model):
     
 
 
+# --- Create --------------------------------------------------------------- 
 @app.route(BASE_URL + '/new', methods=['POST'])
 def create():
     if not request.json:
         abort(400)
         
-    game = Videojuegos(titulo=request.json['titulo'], desarrollador=request.json['desarrollador'], anio_lanzamiento=request.json['anio_lanzamiento'], plataforma=request.json['plataforma'], clasificacion=request.json['clasificacion'])
+    game = Videojuegos(
+        titulo=request.json['titulo'], 
+        desarrollador=request.json['desarrollador'], 
+        anio_lanzamiento=request.json['anio_lanzamiento'], 
+        plataforma=request.json['plataforma'], 
+        clasificacion=request.json['clasificacion']
+        )
     db.session.add(game)
     db.session.commit()
     return jsonify(game.to_json()), 201
 
 
-# --- Read ---
+
+# --- Read -----------------------------------------------------------------
 @app.route(BASE_URL + '/read', methods=['GET'])
 def read():
     games = Videojuegos.query.all()
@@ -87,13 +91,12 @@ def read_by_company(company:str):
 
 @app.route(BASE_URL + '/read/plataform/<plataform>', methods=['GET'])
 def read_by_plataform(plataform:str):
-    games = Videojuegos.query.filter(Videojuegos.desarrollador==plataform)
+    games = Videojuegos.query.filter(Videojuegos.plataforma==plataform)
     return jsonify([game.to_json() for game in games])
     
 
 
-
-# --- Update ---
+# --- Update ---------------------------------------------------------------
 @app.route(BASE_URL + '/update/<id>', methods=['PUT'])
 def update(id:int):
     game = Videojuegos.query.get(id)
@@ -104,7 +107,9 @@ def update(id:int):
     return jsonify(game.to_json()), 202
 
 
-@app.route(BASE_URL + '/delete', methods=['DELETE'])
+
+# --- Delete ---------------------------------------------------------------
+@app.route(BASE_URL + '/delete/<id>', methods=['DELETE'])
 def delete(id):
     game = Videojuegos.query.get_or_404(id)
 
@@ -113,13 +118,14 @@ def delete(id):
     return jsonify(game.to_json()), 202
 
 
+
 # --- MAIN -------------------------------------------------------------------- 
 @app.route('/')
 def index():
     return "Welcome to my ORM app Web: Videogames!"
 
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    print("Tables created...")
     app.run(debug=False)
